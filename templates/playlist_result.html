@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Playlist Result - My Flask Website{% endblock %}
+
+{% block content %}
+    {% if success %}
+        <!-- Success message -->
+        <div style="background-color: #d4edda; color: #155724; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+            <h2>Success!</h2>
+            <p>Your playlist "<strong>{{ playlist_name }}</strong>" has been created!</p>
+            <p><a href="{{ playlist_url }}" target="_blank" style="color: #1db954;">Open in Spotify</a></p>
+        </div>
+    {% else %}
+        <!-- Error message -->
+        <div style="background-color: #f8d7da; color: #721c24; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+            <h2>❌ Error</h2>
+            <p>Could not create your playlist.</p>
+            <p><em>{{ error_message }}</em></p>
+        </div>
+    {% endif %}
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/spotify">← Back to Spotify Page</a>
+    </div>
+{% endblock %}

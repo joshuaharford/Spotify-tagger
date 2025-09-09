@@ -1,0 +1,10 @@
+{% extends "base.html" %} <!-- Tells Flask to use base.html as the foundation -->
+
+{% block title %}Home - My Flask Website{% endblock %}
+
+{% block content %}
+    <h1>Hello World! My first website is working!</h1>
+    <p>Welcome to my Flask website!</p>
+    <!-- Display the dynamic date we're passing from Python -->
+    <p>Today's date: {{ date }}</p>
+{% endblock %}
