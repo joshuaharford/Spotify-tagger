@@ -226,23 +226,9 @@ def get_song_attributes(song_id):
     }
 
 
-
 @app.route('/')
 def home():
-    current_time = datetime.now().strftime("%B %d, %Y")
-    return render_template('index.html', date=current_time)
-
-
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
-
-@app.route('/spotify')
-def spotify():
-    """Redirect to tag liked songs as default"""
+    """Main page - redirect to tag liked songs as default"""
     if 'token_info' not in session:
         return redirect(url_for('login'))
     
@@ -2510,12 +2496,24 @@ def get_prev_untagged_offset():
 
 @app.route('/logout')
 def logout():
-    """Clear session and redirect to home page"""
+    """Clear session and show logged out state"""
     print("DEBUG - User logging out, clearing session")
     session.clear()
     
-    # Redirect to home page where they can choose to login again
-    return redirect('/')
+    # Show a simple logged out page
+    return '''
+    <html>
+    <head>
+        <title>Spotify Tagger</title>
+        <link rel="stylesheet" href="{}">
+    </head>
+    <body style="text-align: center; padding: 100px; font-family: Arial, sans-serif;">
+        <h1>Logged out successfully</h1>
+        <p>You have been logged out of Spotify Tagger.</p>
+        <a href="/login" style="background-color: #1db954; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block; margin-top: 20px;">Login with Spotify</a>
+    </body>
+    </html>
+    '''.format(url_for('static', filename='style.css'))
 
 
 # Create database tables if they don't exist
