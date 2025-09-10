@@ -2513,17 +2513,17 @@ def logout():
     return redirect('/')
 
 
-if __name__ == '__main__':
-    # Create database tables if they don't exist
-    with app.app_context():
-        # Print database file path
-        import sqlite3
-        db_path = 'spotify_tags.db'
-        print(f"DEBUG - Creating database at: {os.path.abspath(db_path)}")
-        
-        db.create_all() 
-        print("Database tables created successfully!")
-        
+# Create database tables if they don't exist
+with app.app_context():
+    # Print database file path
+    import sqlite3
+    db_path = 'spotify_tags.db'
+    print(f"DEBUG - Creating database at: {os.path.abspath(db_path)}")
     
+    db.create_all() 
+    print("Database tables created successfully!")
+
+if __name__ == '__main__':
+    # Only run this when testing locally, not with gunicorn
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
