@@ -39,15 +39,33 @@ CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET', "d5d94ba238d84675bcabb28
 REDIRECT_URI = os.environ.get('REDIRECT_URI', "http://127.0.0.1:5000/callback")
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 SCOPE = "playlist-modify-public playlist-read-private user-library-read user-library-modify user-read-playback-state"
-# Database configuration
+# Database configuration with enhanced debugging
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spotify_tags.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# ADD THESE DEBUG LINES:
+# Enhanced debug information
 print(f"DEBUG - Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
 print(f"DEBUG - Working directory: {os.getcwd()}")
 print(f"DEBUG - App instance path: {app.instance_path}")
+print(f"DEBUG - App root path: {app.root_path}")
+
+# Check if instance folder exists and list its contents
+import os
+if os.path.exists(app.instance_path):
+    print(f"DEBUG - Instance folder exists, contents: {os.listdir(app.instance_path)}")
+else:
+    print(f"DEBUG - Instance folder does not exist: {app.instance_path}")
+
+# Check current directory contents
+print(f"DEBUG - Current directory contents: {os.listdir('.')}")
+
+# Try to find any .db files
+for root, dirs, files in os.walk('.'):
+    for file in files:
+        if file.endswith('.db'):
+            full_path = os.path.join(root, file)
+            print(f"DEBUG - Found .db file: {full_path}")
 
 
 # Global cache storage (better than session for large data)
@@ -2519,26 +2537,38 @@ def logout():
 # Create database tables if they don't exist
 try:
     with app.app_context():
-        # Ensure instance folder exists
-        import os
-        instance_dir = os.path.dirname(app.instance_path)
+        # Create instance directory if it doesn't exist
         if not os.path.exists(app.instance_path):
             os.makedirs(app.instance_path)
             print(f"DEBUG - Created instance directory: {app.instance_path}")
         
-        # Print database file path
-        db_path = os.path.join(app.instance_path, 'spotify_tags.db')
-        print(f"DEBUG - Creating database at: {db_path}")
+        # Get the actual database file path
+        from sqlalchemy import inspect
+        engine = db.engine
+        print(f"DEBUG - Database engine URL: {engine.url}")
+        
+        # For SQLite, extract the file path
+        if str(engine.url).startswith('sqlite:///'):
+            db_file_path = str(engine.url)[10:]  # Remove 'sqlite:///'
+            if not db_file_path.startswith('/'):
+                # Relative path, make it absolute
+                db_file_path = os.path.abspath(db_file_path)
+            print(f"DEBUG - Actual database file path: {db_file_path}")
+            print(f"DEBUG - Database file exists: {os.path.exists(db_file_path)}")
+            if os.path.exists(db_file_path):
+                print(f"DEBUG - Database file size: {os.path.getsize(db_file_path)} bytes")
         
         db.create_all() 
         print("Database tables created successfully!")
         
+        # List contents after creation
+        if os.path.exists(app.instance_path):
+            print(f"DEBUG - Instance folder after creation: {os.listdir(app.instance_path)}")
+        
 except Exception as e:
     print(f"ERROR - Failed to create database: {e}")
-    print(f"ERROR - App instance path: {app.instance_path}")
-    print(f"ERROR - Current working directory: {os.getcwd()}")
-
-print("DEBUG - App is fully initialized and ready to serve requests")
+    import traceback
+    print(f"ERROR - Full traceback: {traceback.format_exc()}")
 
 if __name__ == '__main__':
     # Only run this when testing locally, not with gunicorn
