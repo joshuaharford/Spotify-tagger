@@ -25,47 +25,32 @@ try:
     CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID', "3132130fb7504d2b80302528403d082a")
     CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET', "d5d94ba238d84675bcabb28dabae49d4")
     REDIRECT_URI = os.environ.get('REDIRECT_URI', "http://127.0.0.1:5000/callback")
+    SCOPE = "playlist-modify-public playlist-read-private user-library-read user-library-modify user-read-playback-state"
     print("DEBUG - Environment variables loaded")
+    
+    # Database configuration - use PostgreSQL on production, SQLite locally
+    if os.environ.get('DATABASE_URL'):
+        # Production - use PostgreSQL (Supabase)
+        database_url = os.environ.get('DATABASE_URL')
+        if database_url.startswith('postgres://'):
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+        print("DEBUG - Using Supabase PostgreSQL database")
+    else:
+        # Local development - use SQLite
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spotify_tags.db'
+        print("DEBUG - Using local SQLite database")
+
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db = SQLAlchemy(app)
+
+    print(f"DEBUG - Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    print(f"DEBUG - Working directory: {os.getcwd()}")
+    print(f"DEBUG - App instance path: {app.instance_path}")
     
 except Exception as e:
     print(f"ERROR - Failed during app initialization: {e}")
     raise
-
-
-
-# Your Spotify credentials
-CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID', "3132130fb7504d2b80302528403d082a")
-CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET', "d5d94ba238d84675bcabb28dabae49d4")
-REDIRECT_URI = os.environ.get('REDIRECT_URI', "http://127.0.0.1:5000/callback")
-app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
-SCOPE = "playlist-modify-public playlist-read-private user-library-read user-library-modify user-read-playback-state"
-# Database configuration - use PostgreSQL on production, SQLite locally
-import os
-
-if os.environ.get('DATABASE_URL'):
-    # Production - use PostgreSQL (Supabase)
-    database_url = os.environ.get('DATABASE_URL')
-    if database_url.startswith('postgres://'):
-        database_url = database_url.replace('postgres://', 'postgresql://', 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    print("DEBUG - Using Supabase PostgreSQL database")
-else:
-    # Local development - use SQLite
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spotify_tags.db'
-    print("DEBUG - Using local SQLite database")
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-
-# Enhanced debug information
-print(f"DEBUG - Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
-print(f"DEBUG - Working directory: {os.getcwd()}")
-print(f"DEBUG - App instance path: {app.instance_path}")
-print(f"DEBUG - App root path: {app.root_path}")
-
-
-
 
 # Global cache storage (better than session for large data)
 liked_songs_cache = {}
