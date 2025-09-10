@@ -1954,52 +1954,37 @@
             
             console.log(`DEBUG - Found ${searchInputs.length} tag search inputs`);
             
-            searchInputs.forEach((searchInput, index) => {
-                const createBtn = createBtns[index]; // Get corresponding create button
-                const songId = searchInput.dataset.songId;
-                const container = document.querySelector(`.available-tags-container[data-song-id="${songId}"]`);
+            searchInput.addEventListener('input', function(e) {
+                const originalInput = e.target.value.trim(); // Preserve original case
+                const searchTerm = originalInput.toLowerCase(); // Lowercase only for searching
                 
-                console.log(`DEBUG - Setting up search for song ${songId}`);
+                // Determine if we should show categories based on URL
+                const showCategories = window.location.pathname.includes('/tag-liked-songs');
                 
-                if (searchInput && container) {
-                    searchInput.addEventListener('input', function(e) {
-                        const searchTerm = e.target.value.toLowerCase().trim();
-                        
-                        // Determine if we should show categories based on URL
-                        const showCategories = window.location.pathname.includes('/tag-liked-songs');
-                        
-                        if (searchTerm === '') {
-                            displayAvailableTags(container, window.allTags || [], null, showCategories);
-                            if (createBtn) createBtn.style.display = 'none';
-                            return;
-                        }
-                        
-                        const filteredTags = (window.allTags || []).filter(tag => 
-                            tag.name.toLowerCase().includes(searchTerm)
-                        );
-                        
-                        displayAvailableTags(container, window.allTags || [], filteredTags, showCategories);
-                        
-                        const exactMatch = (window.allTags || []).some(tag => 
-                            tag.name.toLowerCase() === searchTerm
-                        );
-                        
-                        if (!exactMatch && searchTerm.length > 0 && createBtn) {
-                            createBtn.style.display = 'block';
-                            createBtn.textContent = `Create "${searchTerm}"`;
-                            createBtn.onclick = function() {
-                                createAndAddTag(songId, searchTerm);
-                            };
-                        } else if (createBtn) {
-                            createBtn.style.display = 'none';
-                        }
-                    });
-                    
-                    // Also trigger the initial display of available tags for this song
-                    if (window.allTags) {
-                        const showCategories = window.location.pathname.includes('/tag-liked-songs');
-                        displayAvailableTags(container, window.allTags, null, showCategories);
-                    }
+                if (searchTerm === '') {
+                    displayAvailableTags(container, window.allTags || [], null, showCategories);
+                    if (createBtn) createBtn.style.display = 'none';
+                    return;
+                }
+                
+                const filteredTags = (window.allTags || []).filter(tag => 
+                    tag.name.toLowerCase().includes(searchTerm)
+                );
+                
+                displayAvailableTags(container, window.allTags || [], filteredTags, showCategories);
+                
+                const exactMatch = (window.allTags || []).some(tag => 
+                    tag.name.toLowerCase() === searchTerm
+                );
+                
+                if (!exactMatch && searchTerm.length > 0 && createBtn) {
+                    createBtn.style.display = 'block';
+                    createBtn.textContent = `Create "${originalInput}"`;
+                    createBtn.onclick = function() {
+                        createAndAddTag(songId, originalInput); // Use original case for creation
+                    };
+                } else if (createBtn) {
+                    createBtn.style.display = 'none';
                 }
             });
         }
