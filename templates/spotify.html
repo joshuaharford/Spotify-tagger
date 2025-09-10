@@ -1880,7 +1880,7 @@
                     tagsHtml += '<div style="font-size: 10px; color: #666; font-weight: 600; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">Context/Vibe</div>';
                     sortedContext.forEach(tag => {
                         tagsHtml += `
-                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}'); 
+                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}');" 
                                     style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 3px 8px; border-radius: 12px; font-size: 10px; margin: 1px; cursor: pointer;">
                                 ${tag.name}
                             </button>
@@ -1893,7 +1893,7 @@
                     tagsHtml += '<div style="font-size: 10px; color: #666; font-weight: 600; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">Instrumentation</div>';
                     sortedInstrumentation.forEach(tag => {
                         tagsHtml += `
-                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name}')" 
+                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}');" 
                                     style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 3px 8px; border-radius: 12px; font-size: 10px; margin: 1px; cursor: pointer;">
                                 ${tag.name}
                             </button>
@@ -1906,7 +1906,7 @@
                     tagsHtml += '<div style="font-size: 10px; color: #666; font-weight: 600; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">Genre Sub Tag</div>';
                     sortedGenreSub.forEach(tag => {
                         tagsHtml += `
-                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name}')" 
+                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}');" 
                                     style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 3px 8px; border-radius: 12px; font-size: 10px; margin: 1px; cursor: pointer;">
                                 ${tag.name}
                             </button>
@@ -1919,7 +1919,7 @@
                     tagsHtml += '<div style="font-size: 10px; color: #666; font-weight: 600; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">Genre</div>';
                     sortedGenre.forEach(tag => {
                         tagsHtml += `
-                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name}')" 
+                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}');" 
                                     style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 3px 8px; border-radius: 12px; font-size: 10px; margin: 1px; cursor: pointer;">
                                 ${tag.name}
                             </button>
