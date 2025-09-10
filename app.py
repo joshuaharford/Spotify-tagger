@@ -2517,14 +2517,26 @@ def logout():
 
 
 # Create database tables if they don't exist
-with app.app_context():
-    # Print database file path
-    import sqlite3
-    db_path = 'spotify_tags.db'
-    print(f"DEBUG - Creating database at: {os.path.abspath(db_path)}")
-    
-    db.create_all() 
-    print("Database tables created successfully!")
+try:
+    with app.app_context():
+        # Ensure instance folder exists
+        import os
+        instance_dir = os.path.dirname(app.instance_path)
+        if not os.path.exists(app.instance_path):
+            os.makedirs(app.instance_path)
+            print(f"DEBUG - Created instance directory: {app.instance_path}")
+        
+        # Print database file path
+        db_path = os.path.join(app.instance_path, 'spotify_tags.db')
+        print(f"DEBUG - Creating database at: {db_path}")
+        
+        db.create_all() 
+        print("Database tables created successfully!")
+        
+except Exception as e:
+    print(f"ERROR - Failed to create database: {e}")
+    print(f"ERROR - App instance path: {app.instance_path}")
+    print(f"ERROR - Current working directory: {os.getcwd()}")
 
 print("DEBUG - App is fully initialized and ready to serve requests")
 
