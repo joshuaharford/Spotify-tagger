@@ -7,9 +7,31 @@ from flask_sqlalchemy import SQLAlchemy
 from threading import Lock
 import time
 import json
+import base64
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+print("DEBUG - Starting app initialization...")
+
+try:
+    app = Flask(__name__)
+    print("DEBUG - Flask app created successfully")
+    
+    app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+    print("DEBUG - Secret key set")
+    
+    # Your Spotify credentials
+    CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID', "3132130fb7504d2b80302528403d082a")
+    CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET', "d5d94ba238d84675bcabb28dabae49d4")
+    REDIRECT_URI = os.environ.get('REDIRECT_URI', "http://127.0.0.1:5000/callback")
+    print("DEBUG - Environment variables loaded")
+    
+except Exception as e:
+    print(f"ERROR - Failed during app initialization: {e}")
+    raise
 
 
-app = Flask(__name__)
 
 # Your Spotify credentials
 CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID', "3132130fb7504d2b80302528403d082a")
