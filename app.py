@@ -39,20 +39,9 @@ CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET', "d5d94ba238d84675bcabb28
 REDIRECT_URI = os.environ.get('REDIRECT_URI', "http://127.0.0.1:5000/callback")
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 SCOPE = "playlist-modify-public playlist-read-private user-library-read user-library-modify user-read-playback-state"
-# Database configuration with enhanced debugging
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spotify_tags.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-# Enhanced debug information
-print(f"DEBUG - Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
-print(f"DEBUG - Working directory: {os.getcwd()}")
-print(f"DEBUG - App instance path: {app.instance_path}")
-print(f"DEBUG - App root path: {app.root_path}")
-
+# Database configuration - use PostgreSQL on production, SQLite locally
 import os
 
-# Database configuration - use PostgreSQL on production, SQLite locally
 if os.environ.get('DATABASE_URL'):
     # Production - use PostgreSQL (Supabase)
     database_url = os.environ.get('DATABASE_URL')
@@ -67,6 +56,15 @@ else:
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+
+# Enhanced debug information
+print(f"DEBUG - Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
+print(f"DEBUG - Working directory: {os.getcwd()}")
+print(f"DEBUG - App instance path: {app.instance_path}")
+print(f"DEBUG - App root path: {app.root_path}")
+
+
 
 
 # Global cache storage (better than session for large data)
