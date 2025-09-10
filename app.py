@@ -28,19 +28,8 @@ try:
     SCOPE = "playlist-modify-public playlist-read-private user-library-read user-library-modify user-read-playback-state"
     print("DEBUG - Environment variables loaded")
     
-    # Database configuration - use PostgreSQL on production, SQLite locally
-    if os.environ.get('DATABASE_URL'):
-        # Production - use PostgreSQL (Supabase)
-        database_url = os.environ.get('DATABASE_URL')
-        if database_url.startswith('postgres://'):
-            database_url = database_url.replace('postgres://', 'postgresql://', 1)
-        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-        print("DEBUG - Using Supabase PostgreSQL database")
-    else:
-        # Local development - use SQLite
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spotify_tags.db'
-        print("DEBUG - Using local SQLite database")
-
+    # Simple SQLite database configuration
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spotify_tags.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db = SQLAlchemy(app)
 
@@ -92,9 +81,15 @@ class Tag(db.Model):
     color = db.Column(db.String(7), default='#1db954')  # Hex color for tag display
 
 
-@app.route('/health')
-def health_check():
-    return {'status': 'ok'}, 200
+@app.route('/backup-tags')
+def backup_tags():
+    """Quick way to see all your tags"""
+    try:
+        all_tags = Tag.query.all()
+        tag_names = [tag.name for tag in all_tags]
+        return f"Your tags: {', '.join(tag_names)}"
+    except:
+        return "No tags found"
 
 
 def save_song_to_db(spotify_track_data, sp=None):
