@@ -1880,7 +1880,7 @@
                     tagsHtml += '<div style="font-size: 10px; color: #666; font-weight: 600; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">Context/Vibe</div>';
                     sortedContext.forEach(tag => {
                         tagsHtml += `
-                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name}')" 
+                            <button onclick="addTag(${songId}, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}'); 
                                     style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 3px 8px; border-radius: 12px; font-size: 10px; margin: 1px; cursor: pointer;">
                                 ${tag.name}
                             </button>
@@ -1932,7 +1932,7 @@
                 const sortedTags = inactiveTags.sort((a, b) => a.name.localeCompare(b.name));
                 sortedTags.forEach(tag => {
                     tagsHtml += `
-                        <button onclick="addTag(${songId}, ${tag.id}, '${tag.name}')" 
+                        <button onclick="addTag(${songId}, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}');" 
                                 style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 3px 8px; border-radius: 12px; font-size: 10px; margin: 1px; cursor: pointer;">
                             ${tag.name}
                         </button>
@@ -2330,13 +2330,13 @@
                 // Generate HTML for each category
                 const generateTagHTML = (tag, category) => `
                     <span draggable="true" 
-                        ondragstart="handleTagDragStart(event, ${tag.id}, '${tag.name}', '${category}')"
+                        ondragstart="handleTagDragStart(event, ${tag.id}, '${tag.name.replace(/'/g, "\\'")}', '${category}')"
                         style="display: inline-flex; align-items: center; background-color: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 12px; font-size: 11px; margin: 2px; border: 1px solid #ced4da; transition: all 0.2s; cursor: move;"
                         onmouseover="this.style.backgroundColor='#dee2e6'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'" 
                         onmouseout="this.style.backgroundColor='#e9ecef'; this.style.transform='translateY(0px)'; this.style.boxShadow='none'"
                         ondragend="this.style.opacity='1'">
                         <span style="pointer-events: none;">${tag.name}</span>
-                        <button onclick="confirmDeleteTag(${tag.id}, '${tag.name}')" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 12px; padding: 0; margin-left: 4px; font-weight: bold;">×</button>
+                        <button onclick="confirmDeleteTag(${tag.id}, '${tag.name.replace(/'/g, "\\'")}');" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 12px; padding: 0; margin-left: 4px; font-weight: bold;">×</button>
                     </span>
                 `;
                 
