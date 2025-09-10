@@ -90,6 +90,11 @@ class Tag(db.Model):
     color = db.Column(db.String(7), default='#1db954')  # Hex color for tag display
 
 
+@app.route('/health')
+def health_check():
+    return {'status': 'ok'}, 200
+
+
 def save_song_to_db(spotify_track_data, sp=None):
     """Save song to database if it doesn't already exist"""
     existing_song = Song.query.filter_by(spotify_id=spotify_track_data['id']).first()
@@ -2522,6 +2527,8 @@ with app.app_context():
     
     db.create_all() 
     print("Database tables created successfully!")
+
+print("DEBUG - App is fully initialized and ready to serve requests")
 
 if __name__ == '__main__':
     # Only run this when testing locally, not with gunicorn
