@@ -8,11 +8,7 @@ from threading import Lock
 import time
 import json
 import base64
-import logging
 
-logging.basicConfig(level=logging.DEBUG)
-
-print("DEBUG - Starting app initialization...")
 
 try:
     app = Flask(__name__)
