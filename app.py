@@ -50,22 +50,23 @@ print(f"DEBUG - Working directory: {os.getcwd()}")
 print(f"DEBUG - App instance path: {app.instance_path}")
 print(f"DEBUG - App root path: {app.root_path}")
 
-# Check if instance folder exists and list its contents
 import os
-if os.path.exists(app.instance_path):
-    print(f"DEBUG - Instance folder exists, contents: {os.listdir(app.instance_path)}")
+
+# Database configuration - use PostgreSQL on production, SQLite locally
+if os.environ.get('DATABASE_URL'):
+    # Production - use PostgreSQL (Supabase)
+    database_url = os.environ.get('DATABASE_URL')
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    print("DEBUG - Using Supabase PostgreSQL database")
 else:
-    print(f"DEBUG - Instance folder does not exist: {app.instance_path}")
+    # Local development - use SQLite
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spotify_tags.db'
+    print("DEBUG - Using local SQLite database")
 
-# Check current directory contents
-print(f"DEBUG - Current directory contents: {os.listdir('.')}")
-
-# Try to find any .db files
-for root, dirs, files in os.walk('.'):
-    for file in files:
-        if file.endswith('.db'):
-            full_path = os.path.join(root, file)
-            print(f"DEBUG - Found .db file: {full_path}")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
 # Global cache storage (better than session for large data)
